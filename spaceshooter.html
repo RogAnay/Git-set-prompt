@@ -771,6 +771,9 @@ function createParticles(x, y, color) {
 }
 
 function initGame() {
+    // Stop any existing game loops before starting a new one!
+    cancelAnimationFrame(animationId); 
+
     initAudio();
     player = new Player();
     bullets = [];
@@ -993,12 +996,15 @@ function loop() {
         draw();
         animationId = requestAnimationFrame(loop);
     } else if (gameState === 'GAMEOVER') {
+        // Keep drawing particles for death animation
         draw();
         update(); 
-        if(particles.length > 0) requestAnimationFrame(loop);
+        if(particles.length > 0) {
+            // Make sure we assign the animationId here too!
+            animationId = requestAnimationFrame(loop); 
+        }
     }
 }
-
 // --- EVENT LISTENERS ---
 
 window.addEventListener('keydown', (e) => {
